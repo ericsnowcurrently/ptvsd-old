@@ -81,7 +81,11 @@ def _match(allmatchers, msg, kind, cause=None):
     if cmdid not in allmatchers:
         return None
     for match, default in allmatchers[cmdid]:
-        handler = match(msg, kind, cause)
+        try:
+            handler = match(msg, kind, cause)
+        except Exception:
+            # TODO: log the error?
+            continue
         if handler:
             if handler is True:
                 handler = default
@@ -135,6 +139,7 @@ def look_up_payload(cmdid, kind, cause=None, strict=False):
 
         # Try the cmdid-specific matchers.
         if msg is not None:
+            try:
             handler = _match(allmatchers, cmdid, kind, cause)
             if handler is not None:
                 return handler
@@ -190,8 +195,5 @@ NO_PAYLOAD = Handler(_ensure_missing, None)
 
 ##################################
 # register all default handlers
-
-#register_handler(CMD_LIST_THREADS, KIND_REQUEST, NO_PAYLOAD)
-#register_handler(CMD_RUN, KIND_REQUEST, NO_PAYLOAD)
 
 from . import _payloads  # noqa

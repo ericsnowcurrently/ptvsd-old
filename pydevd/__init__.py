@@ -19,3 +19,4 @@ from ._message import (  # noqa
 from ._handler import (  # noqa
     register_handler, look_up_payload, look_up_response, Handler,
 )
+from ._payloads import *  # noqa
